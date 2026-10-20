@@ -1,0 +1,90 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ResearchEntry from '../../components/ResearchEntry.astro';
+import BachelorFigures from '../../components/BachelorFigures.astro';
+import genuPreview from '../../assets/blog/genu-2026/maike-osborne-talk.jpeg';
+import { locales, pathFor, ui, type Locale, type Page } from '../../i18n';
+import { pageContent, publishedPosts, researchContent } from '../../lib/content';
+import { profile } from '../../config';
+
+export function getStaticPaths() {
+  return locales.flatMap(lang => (['research', 'thesis', 'bachelorThesis', 'blog'] as const).map(page => ({
+    params: { lang, page: pathFor(lang, page).split('/').slice(2, -1).join('/') },
+    props: { lang, page },
+  })));
+}
+interface Props { lang: Locale; page: Exclude<Page, 'home'> }
+const { lang, page } = Astro.props;
+const t = ui[lang];
+const allPosts = await publishedPosts();
+const posts = allPosts.filter(post =>
+  post.data.lang === lang ||
+  !allPosts.some(candidate => candidate.data.lang === lang && candidate.data.translationKey === post.data.translationKey)
+);
+const thesis = page === 'thesis' ? await pageContent(lang, 'thesis') : undefined;
+const bachelor = page === 'bachelorThesis' ? await researchContent(lang, 'dental-bone-loss') : undefined;
+const thesisEntry = thesis ?? bachelor;
+const thesisRender = thesisEntry ? await render(thesisEntry) : undefined;
+const Content = thesisRender?.Content;
+const title = bachelor?.data.title ?? (page === 'thesis' ? t.thesisTitle : t[page]);
+const description = thesisEntry?.data.description ?? (page === 'research' ? t.researchIntro : t.blogIntro);
+const thesisPdf = bachelor?.data.pdf ?? profile.thesisPdf;
+const thesisCode = bachelor ? undefined : profile.thesisCode;
+---
+<Base lang={lang} title={title} description={description} page={page} noindex={page === 'blog' && posts.length === 0}>
+  {page === 'research' && <>
+    <header class="page-heading"><p class="eyebrow">{lang === 'en' ? 'Questions, methods, and findings' : 'Preguntas, métodos y resultados'}</p><h1>{t.research}</h1></header>
+    <div class="reading-column">
+      <p class="page-intro">{t.researchIntro}</p>
+      <section class="research-list" aria-label={t.research}>
+        <ResearchEntry lang={lang} level={2} />
+        <ResearchEntry lang={lang} level={2} work="bachelorThesis" />
+      </section>
+    </div>
+  </>}
+  {(page === 'thesis' || page === 'bachelorThesis') && <article class="thesis-page">
+    <a class="back-link" href={pathFor(lang, 'research')}><span aria-hidden="true">←</span> {t.backResearch}</a>
+    <header class="page-heading thesis-heading">
+      <p class="eyebrow">{t[page]}{bachelor && <> · {bachelor.data.year}</>}</p>
+      <h1 lang={bachelor?.data.titleLang ?? 'en'}>{title}</h1>
+      {!bachelor && <p class="thesis-subtitle" lang="en">{t.thesisSubtitle}</p>}
+    </header>
+    <dl class="thesis-meta">
+      <div><dt>{t.author}</dt><dd>{bachelor?.data.author ?? 'Amadeu Huerta Moncho'}</dd></div>
+      <div><dt>{t.supervision}</dt><dd>{bachelor ? bachelor.data.supervisor : <a href="https://pmorenoz.github.io/">Pablo Moreno-Muñoz</a>}</dd></div>
+      <div><dt>{t.programme}</dt><dd>{bachelor?.data.programme ?? 'Master in Intelligent Interactive Systems'}<br />{bachelor?.data.institution ?? 'Universitat Pompeu Fabra'}</dd></div>
+    </dl>
+    {(thesisPdf || thesisCode) && <div class="document-links">
+      {thesisPdf && <a href={thesisPdf}>{t.thesisPdf}</a>}
+      {thesisCode && <a href={thesisCode}>{t.code}</a>}
+    </div>}
+    {bachelor && <BachelorFigures lang={lang} />}
+    <div class="reading-column prose thesis-prose">{Content && <Content />}</div>
+  </article>}
+  {page === 'blog' && <>
+    <header class="page-heading"><h1>{t.blog}</h1><p class="page-intro">{t.blogIntro}</p></header>
+    <div class="reading-column">
+      {posts.length === 0 ? <p class="quiet-note">{t.blogEmpty}</p> : <ul class="post-list">
+        {posts.map(post => {
+          const href = `/${post.data.lang}/blog/${post.data.slug}/`;
+          const hasPreview = post.data.translationKey === 'genu-2026-copenhagen';
+          return <li class:list={{ 'has-preview': hasPreview }}>
+            {hasPreview && <a class="post-preview" href={href} tabindex="-1" aria-hidden="true">
+              <Image src={genuPreview} width={420} widths={[210, 420]} sizes="(max-width: 700px) 100vw, 190px" alt="" loading="lazy" decoding="async" format="webp" />
+            </a>}
+            <div class="post-summary" lang={post.data.lang}>
+              <div class="post-meta">
+                <time datetime={post.data.published.toISOString().slice(0, 10)}>{post.data.dateLabel ?? post.data.published.toLocaleDateString(post.data.lang === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}</time>
+                {post.data.lang !== lang && <span lang={lang}>{lang === 'es' ? 'En inglés' : 'In Spanish'}</span>}
+              </div>
+              <h2><a href={href}>{post.data.title}</a></h2>
+              <p>{post.data.description}</p>
+            </div>
+          </li>;
+        })}
+      </ul>}
+    </div>
+  </>}
+</Base>

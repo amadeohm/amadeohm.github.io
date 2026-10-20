@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import drone from '../assets/drone-sdu.jpeg';
+import lab from '../assets/drone-lab-sdu.jpeg';
+import field from '../assets/drone-field-sdu.jpeg';
+import { ui, type Locale } from '../i18n';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<figure class="documentary-image drone-photos">
+  <div class="photo-row">
+    <Image src={drone} width={600} widths={[300, 600]} sizes="(max-width: 700px) 24vw, 177px" alt={t.droneAlt} loading="lazy" decoding="async" format="webp" />
+    <Image src={lab} width={900} widths={[450, 900]} sizes="(max-width: 700px) 43vw, 314px" alt={lang === 'en' ? 'Workbenches, drone components and an indoor testing area in the SDU laboratory.' : 'Mesas de trabajo, componentes de drones y un espacio de pruebas interior en el laboratorio de SDU.'} loading="lazy" decoding="async" format="webp" />
+    <Image src={field} width={900} widths={[450, 900]} sizes="(max-width: 700px) 24vw, 177px" alt={lang === 'en' ? 'A group in high-visibility clothing gathered around equipment on a grassy field, with a drone on the ground.' : 'Un grupo con ropa de alta visibilidad alrededor del equipo en un campo de hierba, con un dron en el suelo.'} loading="lazy" decoding="async" format="webp" />
+  </div>
+  <figcaption>{t.droneCaption}</figcaption>
+</figure>

@@ -1,0 +1,67 @@
+---
+import { Image, getImage } from 'astro:assets';
+import segmentation from '../assets/research/dental-bone-loss/sam-segmentation.png';
+import comparison from '../assets/research/dental-bone-loss/bone-loss-comparison.png';
+import type { Locale } from '../i18n';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const spanish = lang === 'es';
+const figures = [
+  {
+    image: segmentation,
+    caption: spanish
+      ? 'Segmentación con SAM. La fila superior muestra la imagen original y las máscaras candidatas; la inferior repite el proceso tras un preprocesado logarítmico. La última columna recoge la máscara de consenso.'
+      : 'Segmentation with SAM. The top row shows the original image and candidate masks; the bottom row repeats the process after logarithmic preprocessing. The final column shows the consensus mask.',
+    alt: spanish
+      ? 'Dos filas de cinco paneles muestran un implante dental con máscaras de segmentación verdes y una máscara de consenso roja.'
+      : 'Two rows of five panels show a dental implant with green segmentation masks and a red consensus mask.',
+    number: 19,
+    page: 58,
+  },
+  {
+    image: comparison,
+    caption: spanish
+      ? 'De la segmentación a la medición. Comparación del método híbrido (izquierda), Mask R-CNN (centro) y U-Net (derecha) sobre la misma región. Los contornos y referencias geométricas permiten comparar cómo obtiene las medidas cada método.'
+      : 'From segmentation to measurement. The hybrid method (left), Mask R-CNN (centre), and U-Net (right) applied to the same region. Overlays and geometric landmarks illustrate how each method derives its measurements.',
+    alt: spanish
+      ? 'Tres vistas del mismo implante comparan medidas verticales y áreas segmentadas, con líneas de referencia verdes, regiones rojas y el implante en violeta.'
+      : 'Three views of the same implant compare vertical measurements and segmented areas, with green reference lines, red regions, and the implant in violet.',
+    number: 33,
+    page: 82,
+  },
+];
+const fullSize = await Promise.all(figures.map(figure =>
+  getImage({ src: figure.image, width: 1800, format: 'webp', quality: 90 })
+));
+---
+
+<details class="photo-gallery bachelor-figures reading-column">
+  <summary>
+    <span class="gallery-label">{spanish ? 'Ver figuras' : 'View figures'}</span>
+    <span class="gallery-count">{spanish ? '2 figuras' : '2 figures'}</span>
+    <span class="disclosure-mark" aria-hidden="true">+</span>
+  </summary>
+  <div class="gallery-content research-figures">
+    <p class="figure-hint">{spanish ? 'Pulsa una imagen para verla ampliada.' : 'Select an image to view it at full size.'}</p>
+    {figures.map((figure, index) => <figure>
+      <a class="research-figure-image" href={fullSize[index].src} aria-label={`${spanish ? 'Ampliar figura' : 'Enlarge figure'} ${figure.number}`}>
+        <Image
+          src={figure.image}
+          width={1380}
+          widths={[460, 920, 1380]}
+          sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 775px) calc(100vw - 5rem), 690px"
+          alt={figure.alt}
+          loading="lazy"
+          decoding="async"
+          format="webp"
+          quality={90}
+        />
+      </a>
+      <figcaption>
+        {figure.caption}
+        {' '}<a href={`/documents/bachelor-thesis.pdf#page=${figure.page}`}>{spanish ? 'Figura' : 'Figure'} {figure.number} · {spanish ? 'memoria' : 'thesis'}</a>.
+      </figcaption>
+    </figure>)}
+  </div>
+</details>

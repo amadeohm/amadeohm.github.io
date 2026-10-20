@@ -1,0 +1,65 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import DronePhotos from '../../components/DronePhotos.astro';
+import Base from '../../layouts/Base.astro';
+import ResearchEntry from '../../components/ResearchEntry.astro';
+import portrait from '../../assets/me-offwhite.png';
+import { profile } from '../../config';
+import { locales, ui, type Locale } from '../../i18n';
+import { pageContent } from '../../lib/content';
+export function getStaticPaths() { return locales.map(lang => ({ params: { lang } })); }
+const lang = Astro.params.lang as Locale;
+const t = ui[lang];
+const entry = await pageContent(lang, 'home');
+const { Content } = await render(entry);
+const masters = await pageContent(lang, 'masters');
+const { Content: MastersContent } = await render(masters);
+const bachelors = await pageContent(lang, 'bachelors');
+const { Content: BachelorsContent } = await render(bachelors);
+---
+<Base lang={lang} title={profile.name} description={entry.data.description} mainClass="home-main">
+  <section class="home-intro" aria-labelledby="home-heading">
+    <div class="home-masthead">
+      <header class="page-heading home-heading">
+        <p class="eyebrow">{lang === 'en' ? 'Research assistant · Artificial intelligence · Machine learning' : 'Asistente de investigación · Inteligencia artificial · Aprendizaje automático'}</p>
+        <h1 id="home-heading">Amadeo Huerta Moncho<span class="name-period" aria-hidden="true">.</span></h1>
+      </header>
+      <figure class="profile-portrait">
+        <Image
+          src={portrait}
+          width={420}
+          widths={[210, 420]}
+          sizes="(max-width: 843.75px) 135px, (max-width: 1031.25px) 16vw, 165px"
+          alt={lang === 'en' ? 'Portrait of Amadeo Huerta Moncho.' : 'Retrato de Amadeo Huerta Moncho.'}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          format="webp"
+        />
+      </figure>
+    </div>
+    <div class="home-biography reading-column prose"><Content /></div>
+  </section>
+  <section aria-labelledby="background-heading">
+    <div class="reading-column prose">
+      <h2 id="background-heading">{lang === 'en' ? 'Background' : 'Formación'}</h2>
+      <MastersContent />
+      <h3>{t.bachelorTitle}</h3>
+      <p>{t.bachelorIntro}</p>
+      <details class="background-disclosure bachelor-disclosure">
+        <summary>
+          <span class="more-label">{lang === 'en' ? 'See more' : 'Ver más'}</span>
+          <span class="less-label">{lang === 'en' ? 'See less' : 'Ver menos'}</span>
+          <span class="disclosure-mark" aria-hidden="true">+</span>
+        </summary>
+        <BachelorsContent />
+        <DronePhotos lang={lang} />
+      </details>
+    </div>
+  </section>
+  <section class="selected-section reading-column" aria-labelledby="selected-heading">
+    <h2 id="selected-heading" class="section-label">{t.selected}</h2>
+    <ResearchEntry lang={lang} />
+  </section>
+</Base>

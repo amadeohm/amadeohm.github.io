@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import venue from '../assets/blog/genu-2026/venue.jpeg';
+import talk from '../assets/blog/genu-2026/maike-osborne-talk.jpeg';
+import registration from '../assets/blog/genu-2026/registration.jpeg';
+---
+
+<details class="photo-gallery article-gallery reading-column">
+  <summary>
+    <span class="gallery-label">GenU 2026 <span class="gallery-location">· Copenhagen</span></span>
+    <span class="gallery-count">3 photographs</span>
+    <span class="disclosure-mark" aria-hidden="true">+</span>
+  </summary>
+  <figure class="gallery-content documentary-image">
+    <div class="event-photo-grid">
+      <Image
+        src={venue}
+        width={700}
+        widths={[350, 700]}
+        sizes="(max-width: 700px) 88vw, 230px"
+        alt="The workshop auditorium beneath the glass roof of Carlsberg Akademi in Copenhagen."
+        loading="lazy"
+        decoding="async"
+        format="webp"
+      />
+      <Image
+        src={talk}
+        width={900}
+        widths={[450, 900]}
+        sizes="(max-width: 700px) 88vw, 440px"
+        alt="Maike Osborne presenting AI governance needs Bayes? at GenU 2026."
+        loading="lazy"
+        decoding="async"
+        format="webp"
+      />
+      <Image
+        src={registration}
+        width={900}
+        widths={[450, 900]}
+        sizes="(max-width: 700px) 88vw, 440px"
+        alt="GenU 2026 participant badges arranged on the registration table."
+        loading="lazy"
+        decoding="async"
+        format="webp"
+      />
+    </div>
+    <figcaption>Carlsberg Akademi, Copenhagen · GenU 2026.</figcaption>
+  </figure>
+</details>

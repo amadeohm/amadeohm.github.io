@@ -1,0 +1,17 @@
+---
+import { pathFor, ui, type Locale } from '../i18n';
+import { researchContent } from '../lib/content';
+interface Props { lang: Locale; level?: 2 | 3; work?: 'thesis' | 'bachelorThesis' }
+const { lang, level = 3, work = 'thesis' } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h3';
+const t = ui[lang];
+const bachelor = work === 'bachelorThesis' ? await researchContent(lang, 'dental-bone-loss') : undefined;
+const data = bachelor?.data;
+---
+<article class="research-entry">
+  <p class="entry-meta">{t[work]}<span aria-hidden="true"> · </span>{data?.institution ?? 'Universitat Pompeu Fabra'}{data && <> · {data.year}</>}</p>
+  <Heading class="entry-title" lang={data?.titleLang ?? 'en'}><a href={pathFor(lang, work)}>{data?.title ?? t.thesisTitle}</a></Heading>
+  {!data && <p class="entry-subtitle" lang="en">{t.thesisSubtitle}</p>}
+  <p class="entry-summary">{data?.description ?? t.thesisSummary}</p>
+  <a class="text-link" href={pathFor(lang, work)}>{t.read} <span aria-hidden="true">→</span></a>
+</article>

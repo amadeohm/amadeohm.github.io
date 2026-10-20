@@ -1,0 +1,26 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import GenUGallery from '../../../components/GenUGallery.astro';
+import { publishedPosts } from '../../../lib/content';
+import { pathFor, ui } from '../../../i18n';
+export async function getStaticPaths() {
+  return (await publishedPosts()).map(entry => ({ params: { lang: entry.data.lang, slug: entry.data.slug }, props: { entry } }));
+}
+interface Props { entry: CollectionEntry<'blog'> }
+const { entry } = Astro.props;
+const { lang } = entry.data;
+const t = ui[lang];
+const translation = (await publishedPosts()).find(post => post.data.translationKey === entry.data.translationKey && post.data.lang !== lang);
+const alternate = translation ? `/${translation.data.lang}/blog/${translation.data.slug}/` : undefined;
+const { Content } = await render(entry);
+const dateText = entry.data.dateLabel ?? entry.data.published.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+<Base lang={lang} title={entry.data.title} description={entry.data.description} page="blog" article alternate={alternate}>
+  <article>
+    <a class="back-link" href={pathFor(lang, 'blog')}><span aria-hidden="true">←</span> {t.backBlog}</a>
+    <header class="page-heading"><p class="eyebrow"><time datetime={entry.data.published.toISOString().slice(0, 10)}>{dateText}</time></p><h1>{entry.data.title}</h1><p class="page-intro">{entry.data.description}</p></header>
+    <div class="prose reading-column"><Content /></div>
+    {entry.data.translationKey === 'genu-2026-copenhagen' && <GenUGallery />}
+  </article>
+</Base>

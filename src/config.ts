@@ -18,4 +18,5 @@ export const profile: {
 export const social = [
   { label: 'GitHub', href: 'https://github.com/amadeohm' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/amadeo-hm' },
+  { label: 'Social', href: 'https://x.com/ahmoncho' },
 ];

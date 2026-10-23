@@ -60,3 +60,7 @@ The central message is that **not all masked-prediction tasks are equally inform
 These experiments use tractable probabilistic models to understand the operator. They motivate a possible route towards filtering redundant updates, but do not by themselves establish efficiency gains for large neural models. Moving towards those settings also requires accounting for the cost of estimating the score and checking whether predictive performance is preserved.
 
 For the full formulation and the figures discussed here, you can [read the poster](/documents/GenU26_vertical_pdf.pdf) or explore the [master’s thesis and its results](/en/research/predig/).
+
+## Acknowledgements
+
+I am grateful to [Pablo Moreno-Muñoz](https://pmorenoz.github.io/) for his supervision and guidance throughout this work, and for supporting its continued development and my participation in GenU 2026.

@@ -1,7 +1,18 @@
 ---
-lang: en
-kind: thesis
-description: "A master's thesis on valuing observations and masked-prediction tasks through predictive information gain, studied in Bayesian linear regression and probabilistic principal component analysis."
+lang: "en"
+slug: "predig"
+title: "On probabilistic prediction and information-theoretic operators"
+titleLang: "en"
+subtitle: "Tracing Shannon’s footprints across self-supervised learning"
+description: "Can we identify which observations will reduce predictive uncertainty before incorporating them into a model? An investigation of predictive information gain in Bayesian linear regression and probabilistic principal component analysis."
+pageDescription: "A master's thesis on valuing observations and masked-prediction tasks through predictive information gain, studied in Bayesian linear regression and probabilistic principal component analysis."
+author: "Amadeu Huerta Moncho"
+supervisor: "Pablo Moreno-Muñoz"
+supervisorUrl: "https://pmorenoz.github.io/"
+institution: "Universitat Pompeu Fabra"
+programme: "Master in Intelligent Interactive Systems"
+year: 2026
+pdf: "/documents/master-thesis.pdf"
 ---
 
 ## Question

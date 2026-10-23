@@ -1,7 +1,18 @@
 ---
-lang: es
-kind: thesis
-description: "Trabajo de fin de máster sobre la valoración de observaciones y tareas de predicción enmascarada mediante predictive information gain (PREDIG), estudiado en regresión lineal bayesiana y análisis probabilístico de componentes principales."
+lang: "es"
+slug: "predig"
+title: "On probabilistic prediction and information-theoretic operators"
+titleLang: "en"
+subtitle: "Tracing Shannon’s footprints across self-supervised learning"
+description: "¿Podemos identificar qué observaciones reducirán la incertidumbre predictiva antes de incorporarlas al modelo? Un estudio de la ganancia de información predictiva en regresión lineal bayesiana y análisis probabilístico de componentes principales."
+pageDescription: "Trabajo de fin de máster sobre la valoración de observaciones y tareas de predicción enmascarada mediante predictive information gain (PREDIG), estudiado en regresión lineal bayesiana y análisis probabilístico de componentes principales."
+author: "Amadeu Huerta Moncho"
+supervisor: "Pablo Moreno-Muñoz"
+supervisorUrl: "https://pmorenoz.github.io/"
+institution: "Universitat Pompeu Fabra"
+programme: "Master in Intelligent Interactive Systems"
+year: 2026
+pdf: "/documents/master-thesis.pdf"
 ---
 
 ## Pregunta

@@ -7,8 +7,7 @@ import BachelorFigures from '../../components/BachelorFigures.astro';
 import genuPreview from '../../assets/blog/genu-2026/maike-osborne-talk.jpeg';
 import posterPreview from '../../assets/blog/genu-2026/predig-poster.png';
 import { locales, pathFor, ui, type Locale, type Page } from '../../i18n';
-import { pageContent, publishedPosts, researchContent } from '../../lib/content';
-import { profile } from '../../config';
+import { publishedPosts, researchContent } from '../../lib/content';
 
 export function getStaticPaths() {
   return locales.flatMap(lang => (['research', 'thesis', 'bachelorThesis', 'blog'] as const).map(page => ({
@@ -24,15 +23,14 @@ const posts = allPosts.filter(post =>
   post.data.lang === lang ||
   !allPosts.some(candidate => candidate.data.lang === lang && candidate.data.translationKey === post.data.translationKey)
 );
-const thesis = page === 'thesis' ? await pageContent(lang, 'thesis') : undefined;
-const bachelor = page === 'bachelorThesis' ? await researchContent(lang, 'dental-bone-loss') : undefined;
-const thesisEntry = thesis ?? bachelor;
+const thesisEntry = page === 'thesis' || page === 'bachelorThesis'
+  ? await researchContent(lang, page === 'thesis' ? 'predig' : 'dental-bone-loss')
+  : undefined;
+const data = thesisEntry?.data;
 const thesisRender = thesisEntry ? await render(thesisEntry) : undefined;
 const Content = thesisRender?.Content;
-const title = bachelor?.data.title ?? (page === 'thesis' ? t.thesisTitle : t[page]);
-const description = thesisEntry?.data.description ?? (page === 'research' ? t.researchIntro : t.blogIntro);
-const thesisPdf = bachelor?.data.pdf ?? profile.thesisPdf;
-const thesisCode = bachelor ? undefined : profile.thesisCode;
+const title = data?.title ?? t[page];
+const description = data?.pageDescription ?? data?.description ?? (page === 'research' ? t.researchIntro : t.blogIntro);
 ---
 <Base lang={lang} title={title} description={description} page={page} noindex={page === 'blog' && posts.length === 0}>
   {page === 'research' && <>
@@ -45,23 +43,23 @@ const thesisCode = bachelor ? undefined : profile.thesisCode;
       </section>
     </div>
   </>}
-  {(page === 'thesis' || page === 'bachelorThesis') && <article class="thesis-page">
+  {data && <article class="thesis-page">
     <a class="back-link" href={pathFor(lang, 'research')}><span aria-hidden="true">←</span> {t.backResearch}</a>
     <header class="page-heading thesis-heading">
-      <p class="eyebrow">{t[page]}{bachelor && <> · {bachelor.data.year}</>}</p>
-      <h1 lang={bachelor?.data.titleLang ?? 'en'}>{title}</h1>
-      {!bachelor && <p class="thesis-subtitle" lang="en">{t.thesisSubtitle}</p>}
+      <p class="eyebrow">{t[page]} · {data.year}</p>
+      <h1 lang={data.titleLang}>{title}</h1>
+      {data.subtitle && <p class="thesis-subtitle" lang="en">{data.subtitle}</p>}
     </header>
     <dl class="thesis-meta">
-      <div><dt>{t.author}</dt><dd>{bachelor?.data.author ?? 'Amadeu Huerta Moncho'}</dd></div>
-      <div><dt>{t.supervision}</dt><dd>{bachelor ? bachelor.data.supervisor : <a href="https://pmorenoz.github.io/">Pablo Moreno-Muñoz</a>}</dd></div>
-      <div><dt>{t.programme}</dt><dd>{bachelor?.data.programme ?? 'Master in Intelligent Interactive Systems'}<br />{bachelor?.data.institution ?? 'Universitat Pompeu Fabra'}</dd></div>
+      <div><dt>{t.author}</dt><dd>{data.author}</dd></div>
+      <div><dt>{t.supervision}</dt><dd>{data.supervisorUrl ? <a href={data.supervisorUrl}>{data.supervisor}</a> : data.supervisor}</dd></div>
+      <div><dt>{t.programme}</dt><dd>{data.programme}<br />{data.institution}</dd></div>
     </dl>
-    {(thesisPdf || thesisCode) && <div class="document-links">
-      {thesisPdf && <a href={thesisPdf}>{t.thesisPdf}</a>}
-      {thesisCode && <a href={thesisCode}>{t.code}</a>}
+    {(data.pdf || data.code) && <div class="document-links">
+      {data.pdf && <a href={data.pdf}>{t.thesisPdf}</a>}
+      {data.code && <a href={data.code}>{t.code}</a>}
     </div>}
-    {bachelor && <BachelorFigures lang={lang} />}
+    {page === 'bachelorThesis' && <BachelorFigures lang={lang} />}
     <div class="reading-column prose thesis-prose">{Content && <Content />}</div>
   </article>}
   {page === 'blog' && <>

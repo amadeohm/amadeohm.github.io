@@ -13,7 +13,7 @@ export async function publishedPosts() {
   return posts.sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 }
 
-export async function pageContent(lang: Locale, kind: 'home' | 'masters' | 'bachelors' | 'thesis') {
+export async function pageContent(lang: Locale, kind: 'home' | 'masters' | 'bachelors') {
   const matches = await getCollection('pages', ({ data }) => data.lang === lang && data.kind === kind);
   if (matches.length !== 1) throw new Error(`Expected one ${lang}/${kind} content file`);
   return matches[0];

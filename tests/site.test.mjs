@@ -70,7 +70,15 @@ test('research links to the bachelor thesis with its own metadata and document i
     assert.match(detail, /href="\/documents\/bachelor-thesis.pdf"/);
     assert.doesNotMatch(detail, /href="\/documents\/master-thesis.pdf"/);
     assert.ok(detail.includes(`href="/${lang}/${research}/" aria-current="page"`));
-    assert.match(page(`${lang}/${research}/predig`), /href="\/documents\/master-thesis.pdf"/);
+    const master = page(`${lang}/${research}/predig`);
+    assert.match(master, /href="\/documents\/master-thesis.pdf"/);
+    assert.doesNotMatch(master, /href="\/documents\/bachelor-thesis.pdf"/);
+    assert.match(master, /href="https:\/\/pmorenoz.github.io\/"/);
+    assert.match(master, /Amadeu Huerta Moncho/);
+    assert.match(master, /Tracing Shannon’s footprints across self-supervised learning/);
+    assert.match(master, / · 2026<\/p>/);
+    assert.match(index, /Universitat Pompeu Fabra · 2026/);
+    assert.match(index, /Universitat Politècnica de Catalunya · 2025/);
   }
 });
 

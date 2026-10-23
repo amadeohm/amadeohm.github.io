@@ -6,7 +6,7 @@ const pages = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
   schema: z.object({
     lang: z.enum(['en', 'es']),
-    kind: z.enum(['home', 'masters', 'bachelors', 'thesis']),
+    kind: z.enum(['home', 'masters', 'bachelors']),
     description: z.string(),
   }),
 });
@@ -36,6 +36,10 @@ const research = defineCollection({
     lang: z.enum(['en', 'es']),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     title: z.string(),
+    subtitle: z.string().optional(),
+    pageDescription: z.string().optional(),
+    supervisorUrl: z.url().optional(),
+    code: z.url().optional(),
     titleLang: z.enum(['en', 'es']).default('en'),
     description: z.string(),
     author: z.string(),

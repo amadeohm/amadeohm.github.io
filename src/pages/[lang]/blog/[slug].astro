@@ -2,6 +2,8 @@
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import GenUGallery from '../../../components/GenUGallery.astro';
+import { Image } from 'astro:assets';
+import posterPreview from '../../../assets/blog/genu-2026/predig-poster.png';
 import { publishedPosts } from '../../../lib/content';
 import { pathFor, ui } from '../../../i18n';
 export async function getStaticPaths() {
@@ -20,6 +22,12 @@ const dateText = entry.data.dateLabel ?? entry.data.published.toLocaleDateString
   <article>
     <a class="back-link" href={pathFor(lang, 'blog')}><span aria-hidden="true">←</span> {t.backBlog}</a>
     <header class="page-heading"><p class="eyebrow"><time datetime={entry.data.published.toISOString().slice(0, 10)}>{dateText}</time></p><h1>{entry.data.title}</h1><p class="page-intro">{entry.data.description}</p></header>
+    {entry.data.translationKey === 'predig-genu-2026' && <figure class="poster-preview reading-column">
+      <a href="/documents/GenU26_vertical_pdf.pdf" aria-label="View the full research poster (PDF)">
+        <Image src={posterPreview} width={1000} widths={[420, 690, 1000]} sizes="(max-width: 700px) calc(100vw - 44px), 690px" alt="Research poster: On probabilistic prediction and information-theoretic operators, with the PredIG definition, Bayesian linear regression experiments, and masked-image prediction maps." format="webp" loading="lazy" />
+      </a>
+      <figcaption><a href="/documents/GenU26_vertical_pdf.pdf">View the full poster (PDF) <span aria-hidden="true">↗</span></a></figcaption>
+    </figure>}
     <div class="prose reading-column"><Content /></div>
     {entry.data.translationKey === 'genu-2026-copenhagen' && <GenUGallery />}
   </article>

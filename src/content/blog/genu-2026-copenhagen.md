@@ -5,7 +5,7 @@ lang: en
 slug: genu-2026-copenhagen
 translationKey: genu-2026-copenhagen
 published: 2026-09-20
-dateLabel: "September 2026"
+
 draft: false
 ---
 I had the opportunity to attend **GenU 2026 — Generative Models and Uncertainty Quantification**, a two-day workshop in Copenhagen bringing together researchers working across probabilistic modelling, generative AI, Bayesian inference, and uncertainty quantification.

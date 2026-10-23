@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import ResearchEntry from '../../components/ResearchEntry.astro';
 import BachelorFigures from '../../components/BachelorFigures.astro';
 import genuPreview from '../../assets/blog/genu-2026/maike-osborne-talk.jpeg';
+import posterPreview from '../../assets/blog/genu-2026/predig-poster.png';
 import { locales, pathFor, ui, type Locale, type Page } from '../../i18n';
 import { pageContent, publishedPosts, researchContent } from '../../lib/content';
 import { profile } from '../../config';
@@ -69,10 +70,11 @@ const thesisCode = bachelor ? undefined : profile.thesisCode;
       {posts.length === 0 ? <p class="quiet-note">{t.blogEmpty}</p> : <ul class="post-list">
         {posts.map(post => {
           const href = `/${post.data.lang}/blog/${post.data.slug}/`;
-          const hasPreview = post.data.translationKey === 'genu-2026-copenhagen';
-          return <li class:list={{ 'has-preview': hasPreview }}>
+          const isPoster = post.data.translationKey === 'predig-genu-2026';
+          const hasPreview = post.data.translationKey === 'genu-2026-copenhagen' || isPoster;
+          return <li class:list={{ 'has-preview': hasPreview, 'has-poster-preview': isPoster }}>
             {hasPreview && <a class="post-preview" href={href} tabindex="-1" aria-hidden="true">
-              <Image src={genuPreview} width={420} widths={[210, 420]} sizes="(max-width: 700px) 100vw, 190px" alt="" loading="lazy" decoding="async" format="webp" />
+              <Image src={isPoster ? posterPreview : genuPreview} width={420} widths={[210, 420]} sizes={isPoster ? '140px' : '(max-width: 700px) 100vw, 190px'} alt="" loading="lazy" decoding="async" format="webp" />
             </a>}
             <div class="post-summary" lang={post.data.lang}>
               <div class="post-meta">
